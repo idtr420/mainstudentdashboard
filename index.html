@@ -42,6 +42,7 @@
         .dashboard-container {
             display: flex;
             min-height: 100vh;
+            position: relative;
         }
 
         /* Sidebar Styles */
@@ -54,7 +55,7 @@
             top: 0;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
-            z-index: 100;
+            z-index: 1000;
             overflow-y: auto;
             padding-bottom: 20px;
         }
@@ -66,6 +67,10 @@
 
         .sidebar.hidden {
             transform: translateX(-100%);
+        }
+
+        .sidebar.visible {
+            transform: translateX(0);
         }
 
         .sidebar-header {
@@ -121,6 +126,8 @@
             cursor: pointer;
             transition: all 0.2s;
             border-left: 3px solid transparent;
+            text-decoration: none;
+            color: inherit;
         }
 
         .menu-item:hover {
@@ -160,6 +167,11 @@
         .accordion {
             overflow: hidden;
             transition: max-height 0.3s ease;
+            max-height: 0;
+        }
+
+        .accordion.active {
+            max-height: 500px;
         }
 
         .accordion-content {
@@ -172,6 +184,8 @@
             align-items: center;
             cursor: pointer;
             transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
         }
 
         .submenu-item:hover {
@@ -285,6 +299,8 @@
             display: flex;
             align-items: center;
             transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
         }
 
         .dropdown-item:hover {
@@ -317,6 +333,9 @@
             padding: 20px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
         .dark-mode .card {
@@ -462,6 +481,18 @@
             background: rgba(230, 81, 0, 0.2);
         }
 
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
         /* Responsive Styles */
         @media (max-width: 992px) {
             .sidebar {
@@ -477,6 +508,10 @@
             }
             
             .menu-toggle {
+                display: block;
+            }
+
+            .sidebar-overlay.visible {
                 display: block;
             }
         }
@@ -567,34 +602,22 @@
             font-size: 14px;
         }
 
-        /* Hover area to keep sidebar visible */
-        .sidebar-hover-area {
-            position: fixed;
-            left: 280px;
-            top: 0;
-            width: 20px;
-            height: 100vh;
-            z-index: 99;
-            display: none;
-        }
-
-        @media (min-width: 992px) {
-            .sidebar-hover-area {
-                display: block;
-            }
+        /* Clickable elements */
+        .clickable {
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar Hover Area -->
-        <div class="sidebar-hover-area"></div>
+        <!-- Sidebar Overlay for Mobile -->
+        <div class="sidebar-overlay"></div>
         
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>EngDashboard</h2>
-                <i class="fas fa-times close-sidebar" style="cursor: pointer;"></i>
+                <i class="fas fa-times close-sidebar clickable"></i>
             </div>
             
             <div class="sidebar-search">
@@ -602,109 +625,109 @@
             </div>
             
             <div class="sidebar-menu">
-                <div class="menu-item active">
+                <a href="#dashboard" class="menu-item active">
                     <i class="fas fa-home"></i>
                     <span class="menu-text">Dashboard</span>
-                </div>
+                </a>
                 
-                <div class="menu-item accordion-toggle">
+                <div class="menu-item accordion-toggle clickable">
                     <i class="fas fa-book"></i>
                     <span class="menu-text">Courses</span>
                     <i class="fas fa-chevron-down accordion-icon" style="margin-left: auto;"></i>
                 </div>
                 <div class="accordion">
                     <div class="accordion-content">
-                        <div class="submenu-item">
+                        <a href="#current-courses" class="submenu-item">
                             <i class="fas fa-circle-notch"></i>
                             <span>Current Semester</span>
-                        </div>
-                        <div class="submenu-item">
+                        </a>
+                        <a href="#previous-courses" class="submenu-item">
                             <i class="fas fa-history"></i>
                             <span>Previous Courses</span>
-                        </div>
-                        <div class="submenu-item">
+                        </a>
+                        <a href="#electives" class="submenu-item">
                             <i class="fas fa-star"></i>
                             <span>Electives</span>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 
-                <div class="menu-item accordion-toggle">
+                <div class="menu-item accordion-toggle clickable">
                     <i class="fas fa-calendar-alt"></i>
                     <span class="menu-text">Schedule</span>
                     <i class="fas fa-chevron-down accordion-icon" style="margin-left: auto;"></i>
                 </div>
                 <div class="accordion">
                     <div class="accordion-content">
-                        <div class="submenu-item">
+                        <a href="#timetable" class="submenu-item">
                             <i class="fas fa-clock"></i>
                             <span>Timetable</span>
-                        </div>
-                        <div class="submenu-item">
+                        </a>
+                        <a href="#reminders" class="submenu-item">
                             <i class="fas fa-bell"></i>
                             <span>Reminders</span>
-                        </div>
-                        <div class="submenu-item">
+                        </a>
+                        <a href="#deadlines" class="submenu-item">
                             <i class="fas fa-exclamation-circle"></i>
                             <span>Deadlines</span>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 
-                <div class="menu-item accordion-toggle">
+                <div class="menu-item accordion-toggle clickable">
                     <i class="fas fa-chart-bar"></i>
                     <span class="menu-text">Grades</span>
                     <i class="fas fa-chevron-down accordion-icon" style="margin-left: auto;"></i>
                 </div>
                 <div class="accordion">
                     <div class="accordion-content">
-                        <div class="submenu-item">
+                        <a href="#current-grades" class="submenu-item">
                             <i class="fas fa-percentage"></i>
                             <span>Current Grades</span>
-                        </div>
-                        <div class="submenu-item">
+                        </a>
+                        <a href="#progress" class="submenu-item">
                             <i class="fas fa-chart-line"></i>
                             <span>Progress</span>
-                        </div>
-                        <div class="submenu-item">
+                        </a>
+                        <a href="#transcript" class="submenu-item">
                             <i class="fas fa-file-alt"></i>
                             <span>Transcript</span>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 
-                <div class="menu-item">
+                <a href="#labs" class="menu-item">
                     <i class="fas fa-flask"></i>
                     <span class="menu-text">Labs</span>
-                </div>
+                </a>
                 
-                <div class="menu-item">
+                <a href="#projects" class="menu-item">
                     <i class="fas fa-project-diagram"></i>
                     <span class="menu-text">Projects</span>
-                </div>
+                </a>
                 
-                <div class="menu-item">
+                <a href="#study-groups" class="menu-item">
                     <i class="fas fa-users"></i>
                     <span class="menu-text">Study Groups</span>
-                </div>
+                </a>
             </div>
             
             <div class="sidebar-footer">
-                <div class="menu-item accordion-toggle">
+                <div class="menu-item accordion-toggle clickable">
                     <i class="fas fa-cog"></i>
                     <span class="menu-text">Settings</span>
                     <i class="fas fa-chevron-down accordion-icon" style="margin-left: auto;"></i>
                 </div>
                 <div class="accordion">
                     <div class="accordion-content">
-                        <div class="submenu-item">
+                        <a href="#change-password" class="submenu-item">
                             <i class="fas fa-key"></i>
                             <span>Change Password</span>
-                        </div>
-                        <div class="submenu-item">
+                        </a>
+                        <a href="#forgot-password" class="submenu-item">
                             <i class="fas fa-question-circle"></i>
                             <span>Forgot Password</span>
-                        </div>
+                        </a>
                         <div class="theme-label">
                             <i class="fas fa-moon"></i>
                             <span>Dark Mode</span>
@@ -713,10 +736,10 @@
                                 <span class="slider"></span>
                             </label>
                         </div>
-                        <div class="submenu-item">
+                        <a href="#notifications" class="submenu-item">
                             <i class="fas fa-bell"></i>
                             <span>Notifications</span>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -725,33 +748,33 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="top-bar">
-                <div class="menu-toggle">
+                <div class="menu-toggle clickable">
                     <i class="fas fa-bars"></i>
                 </div>
-                <div class="user-profile">
+                <div class="user-profile clickable">
                     <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="profile-img">
                     <span class="profile-name">John Doe</span>
                     <i class="fas fa-chevron-down"></i>
                     <div class="profile-dropdown">
-                        <div class="dropdown-item">
+                        <a href="#profile" class="dropdown-item">
                             <i class="fas fa-user"></i>
                             <span>Profile</span>
-                        </div>
-                        <div class="dropdown-item">
+                        </a>
+                        <a href="#settings" class="dropdown-item">
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
-                        </div>
-                        <div class="dropdown-item">
+                        </a>
+                        <a href="#logout" class="dropdown-item">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Logout</span>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
             
             <div class="content-area">
                 <div class="dashboard-cards">
-                    <div class="card">
+                    <a href="#current-courses" class="card">
                         <div class="card-header">
                             <div class="card-icon" style="background-color: var(--primary);">
                                 <i class="fas fa-book"></i>
@@ -764,9 +787,9 @@
                         <div class="card-footer">
                             <i class="fas fa-arrow-up" style="color: var(--success);"></i> 2 new this semester
                         </div>
-                    </div>
+                    </a>
                     
-                    <div class="card">
+                    <a href="#assignments" class="card">
                         <div class="card-header">
                             <div class="card-icon" style="background-color: var(--success);">
                                 <i class="fas fa-check-circle"></i>
@@ -779,9 +802,9 @@
                         <div class="card-footer">
                             <i class="fas fa-clock" style="color: var(--warning);"></i> 3 pending
                         </div>
-                    </div>
+                    </a>
                     
-                    <div class="card">
+                    <a href="#deadlines" class="card">
                         <div class="card-header">
                             <div class="card-icon" style="background-color: var(--warning);">
                                 <i class="fas fa-calendar-check"></i>
@@ -794,9 +817,9 @@
                         <div class="card-footer">
                             <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> 1 due tomorrow
                         </div>
-                    </div>
+                    </a>
                     
-                    <div class="card">
+                    <a href="#grades" class="card">
                         <div class="card-header">
                             <div class="card-icon" style="background-color: var(--danger);">
                                 <i class="fas fa-chart-line"></i>
@@ -809,10 +832,10 @@
                         <div class="card-footer">
                             <i class="fas fa-arrow-up" style="color: var(--success);"></i> 0.08 from last term
                         </div>
-                    </div>
+                    </a>
                 </div>
                 
-                <div class="timetable">
+                <div class="timetable" id="timetable">
                     <h2 class="section-title">
                         <i class="fas fa-calendar-alt"></i>
                         Weekly Schedule
@@ -918,14 +941,24 @@
             const sidebar = document.querySelector('.sidebar');
             const closeSidebar = document.querySelector('.close-sidebar');
             const mainContent = document.querySelector('.main-content');
-            const sidebarHoverArea = document.querySelector('.sidebar-hover-area');
+            const sidebarOverlay = document.querySelector('.sidebar-overlay');
             
             menuToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('visible');
+                sidebar.classList.add('visible');
+                sidebarOverlay.classList.add('visible');
+                document.body.style.overflow = 'hidden';
             });
             
             closeSidebar.addEventListener('click', function() {
                 sidebar.classList.remove('visible');
+                sidebarOverlay.classList.remove('visible');
+                document.body.style.overflow = '';
+            });
+            
+            sidebarOverlay.addEventListener('click', function() {
+                sidebar.classList.remove('visible');
+                sidebarOverlay.classList.remove('visible');
+                document.body.style.overflow = '';
             });
             
             // Accordion functionality
@@ -936,125 +969,11 @@
                     const accordion = this.nextElementSibling;
                     const icon = this.querySelector('.accordion-icon');
                     
-                    if (accordion.style.maxHeight) {
-                        accordion.style.maxHeight = null;
-                        icon.classList.remove('fa-chevron-up');
-                        icon.classList.add('fa-chevron-down');
-                    } else {
-                        accordion.style.maxHeight = accordion.scrollHeight + 'px';
-                        icon.classList.remove('fa-chevron-down');
-                        icon.classList.add('fa-chevron-up');
-                    }
-                });
-            });
-            
-            // Profile dropdown
-            const profile = document.querySelector('.user-profile');
-            const dropdown = document.querySelector('.profile-dropdown');
-            
-            profile.addEventListener('click', function() {
-                dropdown.classList.toggle('show');
-            });
-            
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!profile.contains(e.target)) {
-                    dropdown.classList.remove('show');
-                }
-            });
-            
-            // Dark mode toggle
-            const themeToggle = document.getElementById('theme-toggle');
-            
-            themeToggle.addEventListener('change', function() {
-                document.body.classList.toggle('dark-mode');
-                localStorage.setItem('darkMode', this.checked);
-            });
-            
-            // Check for saved theme preference
-            if (localStorage.getItem('darkMode') === 'true') {
-                themeToggle.checked = true;
-                document.body.classList.add('dark-mode');
-            }
-            
-            // Improved sidebar behavior
-            let hideSidebarTimeout;
-            const desktopBreakpoint = 992;
-            
-            // Keep sidebar visible when hovering over content near it
-            sidebarHoverArea.addEventListener('mouseenter', function() {
-                clearTimeout(hideSidebarTimeout);
-                if (sidebar.classList.contains('hidden')) {
-                    sidebar.classList.remove('hidden');
-                }
-            });
-            
-            // Keep sidebar visible when hovering over sidebar
-            sidebar.addEventListener('mouseenter', function() {
-                clearTimeout(hideSidebarTimeout);
-                if (sidebar.classList.contains('hidden')) {
-                    sidebar.classList.remove('hidden');
-                }
-            });
-            
-            // Hide sidebar when mouse leaves both sidebar and hover area
-            function handleMouseLeave() {
-                if (window.innerWidth >= desktopBreakpoint) {
-                    hideSidebarTimeout = setTimeout(function() {
-                        if (!sidebar.classList.contains('hidden') && 
-                            !sidebar.matches(':hover') && 
-                            !sidebarHoverArea.matches(':hover')) {
-                            sidebar.classList.add('hidden');
-                        }
-                    }, 300);
-                }
-            }
-            
-            sidebar.addEventListener('mouseleave', handleMouseLeave);
-            sidebarHoverArea.addEventListener('mouseleave', handleMouseLeave);
-            
-            // Also hide sidebar when scrolling (with delay)
-            window.addEventListener('scroll', function() {
-                if (window.innerWidth >= desktopBreakpoint) {
-                    if (!sidebar.classList.contains('hidden') && 
-                        !sidebar.matches(':hover') && 
-                        !sidebarHoverArea.matches(':hover')) {
-                        hideSidebarTimeout = setTimeout(function() {
-                            sidebar.classList.add('hidden');
-                        }, 500);
-                    }
-                }
-            });
-            
-            // Responsive sidebar behavior
-            function handleResize() {
-                if (window.innerWidth >= desktopBreakpoint) {
-                    sidebar.classList.remove('visible');
-                    sidebar.classList.remove('hidden');
-                } else {
-                    sidebar.classList.add('hidden');
-                }
-            }
-            
-            window.addEventListener('resize', handleResize);
-            
-            // Initialize accordions
-            document.querySelectorAll('.accordion').forEach(accordion => {
-                accordion.style.maxHeight = accordion.scrollHeight + 'px';
-                accordion.previousElementSibling.querySelector('.accordion-icon').classList.remove('fa-chevron-down');
-                accordion.previousElementSibling.querySelector('.accordion-icon').classList.add('fa-chevron-up');
-            });
-            
-            // Menu item active state
-            const menuItems = document.querySelectorAll('.menu-item:not(.accordion-toggle)');
-            
-            menuItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    menuItems.forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+                    // Close all other accordions in the same parent
+                    const parentMenu = this.closest('.sidebar-menu, .sidebar-footer');
+                    if (parentMenu) {
+                        parentMenu.querySelectorAll('.accordion').forEach(acc => {
+                            if (acc !== accordion) {
+                                acc.classList.remove('active');
+                                const otherIcon = acc.previousElementSibling.querySelector('.accordion-icon');
+                                if (other
