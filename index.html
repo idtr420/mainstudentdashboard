@@ -566,10 +566,30 @@
             align-items: center;
             font-size: 14px;
         }
+
+        /* Hover area to keep sidebar visible */
+        .sidebar-hover-area {
+            position: fixed;
+            left: 280px;
+            top: 0;
+            width: 20px;
+            height: 100vh;
+            z-index: 99;
+            display: none;
+        }
+
+        @media (min-width: 992px) {
+            .sidebar-hover-area {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
+        <!-- Sidebar Hover Area -->
+        <div class="sidebar-hover-area"></div>
+        
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -898,6 +918,7 @@
             const sidebar = document.querySelector('.sidebar');
             const closeSidebar = document.querySelector('.close-sidebar');
             const mainContent = document.querySelector('.main-content');
+            const sidebarHoverArea = document.querySelector('.sidebar-hover-area');
             
             menuToggle.addEventListener('click', function() {
                 sidebar.classList.toggle('visible');
@@ -956,20 +977,52 @@
                 document.body.classList.add('dark-mode');
             }
             
-            // Auto-hide sidebar on scroll (desktop)
-            let scrollTimer;
+            // Improved sidebar behavior
+            let hideSidebarTimeout;
             const desktopBreakpoint = 992;
             
+            // Keep sidebar visible when hovering over content near it
+            sidebarHoverArea.addEventListener('mouseenter', function() {
+                clearTimeout(hideSidebarTimeout);
+                if (sidebar.classList.contains('hidden')) {
+                    sidebar.classList.remove('hidden');
+                }
+            });
+            
+            // Keep sidebar visible when hovering over sidebar
+            sidebar.addEventListener('mouseenter', function() {
+                clearTimeout(hideSidebarTimeout);
+                if (sidebar.classList.contains('hidden')) {
+                    sidebar.classList.remove('hidden');
+                }
+            });
+            
+            // Hide sidebar when mouse leaves both sidebar and hover area
+            function handleMouseLeave() {
+                if (window.innerWidth >= desktopBreakpoint) {
+                    hideSidebarTimeout = setTimeout(function() {
+                        if (!sidebar.classList.contains('hidden') && 
+                            !sidebar.matches(':hover') && 
+                            !sidebarHoverArea.matches(':hover')) {
+                            sidebar.classList.add('hidden');
+                        }
+                    }, 300);
+                }
+            }
+            
+            sidebar.addEventListener('mouseleave', handleMouseLeave);
+            sidebarHoverArea.addEventListener('mouseleave', handleMouseLeave);
+            
+            // Also hide sidebar when scrolling (with delay)
             window.addEventListener('scroll', function() {
                 if (window.innerWidth >= desktopBreakpoint) {
-                    if (!sidebar.classList.contains('hidden')) {
-                        sidebar.classList.add('hidden');
+                    if (!sidebar.classList.contains('hidden') && 
+                        !sidebar.matches(':hover') && 
+                        !sidebarHoverArea.matches(':hover')) {
+                        hideSidebarTimeout = setTimeout(function() {
+                            sidebar.classList.add('hidden');
+                        }, 500);
                     }
-                    
-                    clearTimeout(scrollTimer);
-                    scrollTimer = setTimeout(function() {
-                        sidebar.classList.remove('hidden');
-                    }, 1000);
                 }
             });
             
@@ -978,6 +1031,8 @@
                 if (window.innerWidth >= desktopBreakpoint) {
                     sidebar.classList.remove('visible');
                     sidebar.classList.remove('hidden');
+                } else {
+                    sidebar.classList.add('hidden');
                 }
             }
             
