@@ -157,9 +157,24 @@
             font-weight: 500;
         }
 
+        /* Updated Accordion Styles */
         .accordion {
+            max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .accordion.expanded {
+            max-height: 500px;
+        }
+        
+        .accordion-icon {
+            transition: transform 0.3s ease;
+            margin-left: auto;
+        }
+        
+        .accordion-toggle.active .accordion-icon {
+            transform: rotate(180deg);
         }
 
         .accordion-content {
@@ -462,6 +477,71 @@
             background: rgba(230, 81, 0, 0.2);
         }
 
+        /* Course details row styles */
+        .course-details {
+            display: none;
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .dark-mode .course-details {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .course-details.show {
+            display: table-row;
+        }
+
+        .course-details td {
+            padding: 20px;
+            vertical-align: top;
+        }
+
+        .details-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .details-section {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .details-section h4 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .details-section ul {
+            list-style-type: none;
+        }
+
+        .details-section li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .details-section i {
+            margin-right: 8px;
+            color: var(--gray);
+            width: 18px;
+            text-align: center;
+        }
+
+        .expand-btn {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .expand-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .dark-mode .expand-btn:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
         /* Responsive Styles */
         @media (max-width: 992px) {
             .sidebar {
@@ -481,6 +561,16 @@
             }
         }
 
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .details-container {
+                flex-direction: column;
+            }
+        }
+
         @media (max-width: 576px) {
             .dashboard-cards {
                 grid-template-columns: 1fr;
@@ -492,6 +582,56 @@
             
             .content-area {
                 padding: 15px;
+            }
+
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+            }
+
+            .dark-mode tr {
+                border-color: rgba(255, 255, 255, 0.1);
+            }
+
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            td:before {
+                position: absolute;
+                left: 15px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: 600;
+            }
+
+            td:nth-of-type(1):before { content: "Time"; }
+            td:nth-of-type(2):before { content: "Monday"; }
+            td:nth-of-type(3):before { content: "Tuesday"; }
+            td:nth-of-type(4):before { content: "Wednesday"; }
+            td:nth-of-type(5):before { content: "Thursday"; }
+            td:nth-of-type(6):before { content: "Friday"; }
+
+            .course-details td {
+                padding-left: 15px;
+            }
+
+            .course-details td:before {
+                display: none;
             }
         }
 
@@ -607,12 +747,12 @@
                     <span class="menu-text">Dashboard</span>
                 </div>
                 
-                <div class="menu-item accordion-toggle">
+                <div class="menu-item accordion-toggle" id="courses-toggle">
                     <i class="fas fa-book"></i>
                     <span class="menu-text">Courses</span>
-                    <i class="fas fa-chevron-down accordion-icon" style="margin-left: auto;"></i>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
                 </div>
-                <div class="accordion">
+                <div class="accordion" id="courses-accordion">
                     <div class="accordion-content">
                         <div class="submenu-item">
                             <i class="fas fa-circle-notch"></i>
@@ -629,12 +769,12 @@
                     </div>
                 </div>
                 
-                <div class="menu-item accordion-toggle">
+                <div class="menu-item accordion-toggle" id="schedule-toggle">
                     <i class="fas fa-calendar-alt"></i>
                     <span class="menu-text">Schedule</span>
-                    <i class="fas fa-chevron-down accordion-icon" style="margin-left: auto;"></i>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
                 </div>
-                <div class="accordion">
+                <div class="accordion" id="schedule-accordion">
                     <div class="accordion-content">
                         <div class="submenu-item">
                             <i class="fas fa-clock"></i>
@@ -651,12 +791,12 @@
                     </div>
                 </div>
                 
-                <div class="menu-item accordion-toggle">
+                <div class="menu-item accordion-toggle" id="grades-toggle">
                     <i class="fas fa-chart-bar"></i>
                     <span class="menu-text">Grades</span>
-                    <i class="fas fa-chevron-down accordion-icon" style="margin-left: auto;"></i>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
                 </div>
-                <div class="accordion">
+                <div class="accordion" id="grades-accordion">
                     <div class="accordion-content">
                         <div class="submenu-item">
                             <i class="fas fa-percentage"></i>
@@ -690,12 +830,12 @@
             </div>
             
             <div class="sidebar-footer">
-                <div class="menu-item accordion-toggle">
+                <div class="menu-item accordion-toggle" id="settings-toggle">
                     <i class="fas fa-cog"></i>
                     <span class="menu-text">Settings</span>
-                    <i class="fas fa-chevron-down accordion-icon" style="margin-left: auto;"></i>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
                 </div>
-                <div class="accordion">
+                <div class="accordion" id="settings-accordion">
                     <div class="accordion-content">
                         <div class="submenu-item">
                             <i class="fas fa-key"></i>
@@ -831,7 +971,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <!-- Thermodynamics Row -->
+                                <tr class="expand-btn" data-course="thermodynamics">
                                     <td>9:00 - 10:30</td>
                                     <td>
                                         <strong>Thermodynamics</strong><br>
@@ -847,7 +988,40 @@
                                     <td></td>
                                     <td></td>
                                 </tr>
-                                <tr>
+                                <tr class="course-details" id="thermodynamics-details">
+                                    <td colspan="6">
+                                        <div class="details-container">
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-info-circle"></i> Course Information</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-book"></i> Course Code: ENGG 301</li>
+                                                    <li><i class="fas fa-user"></i> Instructor: Prof. John Smith</li>
+                                                    <li><i class="fas fa-envelope"></i> Email: j.smith@university.edu</li>
+                                                    <li><i class="fas fa-building"></i> Room: ENG-205</li>
+                                                </ul>
+                                            </div>
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-tasks"></i> Assignments</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-file-alt"></i> Assignment 1: Due Oct 15</li>
+                                                    <li><i class="fas fa-file-alt"></i> Assignment 2: Due Oct 29</li>
+                                                    <li><i class="fas fa-file-alt"></i> Midterm: Nov 12</li>
+                                                </ul>
+                                            </div>
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-chart-bar"></i> Grading</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-percentage"></i> Assignments: 30%</li>
+                                                    <li><i class="fas fa-percentage"></i> Midterm: 30%</li>
+                                                    <li><i class="fas fa-percentage"></i> Final Exam: 40%</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Fluid Mechanics Row -->
+                                <tr class="expand-btn" data-course="fluid-mechanics">
                                     <td>10:45 - 12:15</td>
                                     <td></td>
                                     <td>
@@ -863,7 +1037,40 @@
                                     </td>
                                     <td></td>
                                 </tr>
-                                <tr>
+                                <tr class="course-details" id="fluid-mechanics-details">
+                                    <td colspan="6">
+                                        <div class="details-container">
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-info-circle"></i> Course Information</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-book"></i> Course Code: ENGG 302</li>
+                                                    <li><i class="fas fa-user"></i> Instructor: Prof. Sarah Johnson</li>
+                                                    <li><i class="fas fa-envelope"></i> Email: s.johnson@university.edu</li>
+                                                    <li><i class="fas fa-building"></i> Room: ENG-210</li>
+                                                </ul>
+                                            </div>
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-tasks"></i> Assignments</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-file-alt"></i> Lab Report 1: Due Oct 18</li>
+                                                    <li><i class="fas fa-file-alt"></i> Problem Set 2: Due Nov 1</li>
+                                                    <li><i class="fas fa-file-alt"></i> Final Project: Dec 10</li>
+                                                </ul>
+                                            </div>
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-chart-bar"></i> Grading</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-percentage"></i> Labs: 25%</li>
+                                                    <li><i class="fas fa-percentage"></i> Problem Sets: 25%</li>
+                                                    <li><i class="fas fa-percentage"></i> Final Project: 50%</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Materials Science Row -->
+                                <tr class="expand-btn" data-course="materials-science">
                                     <td>13:30 - 15:00</td>
                                     <td>
                                         <strong>Materials Science</strong><br>
@@ -883,7 +1090,40 @@
                                         TA: Alex
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr class="course-details" id="materials-science-details">
+                                    <td colspan="6">
+                                        <div class="details-container">
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-info-circle"></i> Course Information</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-book"></i> Course Code: ENGG 303</li>
+                                                    <li><i class="fas fa-user"></i> Instructor: Prof. Michael Lee</li>
+                                                    <li><i class="fas fa-envelope"></i> Email: m.lee@university.edu</li>
+                                                    <li><i class="fas fa-building"></i> Room: ENG-305</li>
+                                                </ul>
+                                            </div>
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-tasks"></i> Assignments</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-flask"></i> Lab Report 1: Due Oct 20</li>
+                                                    <li><i class="fas fa-file-alt"></i> Quiz 1: Oct 25</li>
+                                                    <li><i class="fas fa-file-alt"></i> Final Exam: Dec 15</li>
+                                                </ul>
+                                            </div>
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-chart-bar"></i> Grading</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-percentage"></i> Labs: 30%</li>
+                                                    <li><i class="fas fa-percentage"></i> Quizzes: 20%</li>
+                                                    <li><i class="fas fa-percentage"></i> Final Exam: 50%</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Control Systems Row -->
+                                <tr class="expand-btn" data-course="control-systems">
                                     <td>15:15 - 16:45</td>
                                     <td></td>
                                     <td>
@@ -901,6 +1141,37 @@
                                         <strong>Control Systems</strong><br>
                                         <span class="badge badge-lecture">Lecture</span><br>
                                         Prof. Chen
+                                    </td>
+                                </tr>
+                                <tr class="course-details" id="control-systems-details">
+                                    <td colspan="6">
+                                        <div class="details-container">
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-info-circle"></i> Course Information</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-book"></i> Course Code: ENGG 304</li>
+                                                    <li><i class="fas fa-user"></i> Instructor: Prof. Lisa Chen</li>
+                                                    <li><i class="fas fa-envelope"></i> Email: l.chen@university.edu</li>
+                                                    <li><i class="fas fa-building"></i> Room: ENG-310</li>
+                                                </ul>
+                                            </div>
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-tasks"></i> Assignments</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-file-alt"></i> Problem Set 1: Due Oct 22</li>
+                                                    <li><i class="fas fa-flask"></i> Lab Project: Nov 15</li>
+                                                    <li><i class="fas fa-file-alt"></i> Final Exam: Dec 18</li>
+                                                </ul>
+                                            </div>
+                                            <div class="details-section">
+                                                <h4><i class="fas fa-chart-bar"></i> Grading</h4>
+                                                <ul>
+                                                    <li><i class="fas fa-percentage"></i> Problem Sets: 20%</li>
+                                                    <li><i class="fas fa-percentage"></i> Lab Project: 30%</li>
+                                                    <li><i class="fas fa-percentage"></i> Final Exam: 50%</li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -928,22 +1199,52 @@
                 sidebar.classList.remove('visible');
             });
             
-            // Accordion functionality
-            const accordionToggles = document.querySelectorAll('.accordion-toggle');
+            // Improved Accordion functionality for sidebar menu
+            const accordionToggles = {
+                courses: {
+                    toggle: document.getElementById('courses-toggle'),
+                    accordion: document.getElementById('courses-accordion')
+                },
+                schedule: {
+                    toggle: document.getElementById('schedule-toggle'),
+                    accordion: document.getElementById('schedule-accordion')
+                },
+                grades: {
+                    toggle: document.getElementById('grades-toggle'),
+                    accordion: document.getElementById('grades-accordion')
+                },
+                settings: {
+                    toggle: document.getElementById('settings-toggle'),
+                    accordion: document.getElementById('settings-accordion')
+                }
+            };
             
-            accordionToggles.forEach(toggle => {
-                toggle.addEventListener('click', function() {
-                    const accordion = this.nextElementSibling;
-                    const icon = this.querySelector('.accordion-icon');
+            // Initialize all accordions to be closed
+            Object.values(accordionToggles).forEach(item => {
+                item.accordion.style.maxHeight = '0';
+            });
+            
+            // Set up click handlers for each accordion toggle
+            Object.values(accordionToggles).forEach(item => {
+                item.toggle.addEventListener('click', function() {
+                    // Close all other accordions
+                    Object.values(accordionToggles).forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.accordion.classList.remove('expanded');
+                            otherItem.accordion.style.maxHeight = '0';
+                            otherItem.toggle.classList.remove('active');
+                        }
+                    });
                     
-                    if (accordion.style.maxHeight) {
-                        accordion.style.maxHeight = null;
-                        icon.classList.remove('fa-chevron-up');
-                        icon.classList.add('fa-chevron-down');
+                    // Toggle the clicked accordion
+                    if (item.accordion.classList.contains('expanded')) {
+                        item.accordion.classList.remove('expanded');
+                        item.accordion.style.maxHeight = '0';
+                        item.toggle.classList.remove('active');
                     } else {
-                        accordion.style.maxHeight = accordion.scrollHeight + 'px';
-                        icon.classList.remove('fa-chevron-down');
-                        icon.classList.add('fa-chevron-up');
+                        item.accordion.classList.add('expanded');
+                        item.accordion.style.maxHeight = item.accordion.scrollHeight + 'px';
+                        item.toggle.classList.add('active');
                     }
                 });
             });
@@ -1038,13 +1339,6 @@
             
             window.addEventListener('resize', handleResize);
             
-            // Initialize accordions
-            document.querySelectorAll('.accordion').forEach(accordion => {
-                accordion.style.maxHeight = accordion.scrollHeight + 'px';
-                accordion.previousElementSibling.querySelector('.accordion-icon').classList.remove('fa-chevron-down');
-                accordion.previousElementSibling.querySelector('.accordion-icon').classList.add('fa-chevron-up');
-            });
-            
             // Menu item active state
             const menuItems = document.querySelectorAll('.menu-item:not(.accordion-toggle)');
             
@@ -1054,8 +1348,27 @@
                     this.classList.add('active');
                 });
             });
+
+            // Course details toggle
+            const expandButtons = document.querySelectorAll('.expand-btn');
+            
+            expandButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const courseId = this.getAttribute('data-course');
+                    const detailsRow = document.getElementById(`${courseId}-details`);
+                    
+                    // Close all other details rows first
+                    document.querySelectorAll('.course-details').forEach(row => {
+                        if (row.id !== `${courseId}-details`) {
+                            row.classList.remove('show');
+                        }
+                    });
+                    
+                    // Toggle the clicked row
+                    detailsRow.classList.toggle('show');
+                });
+            });
         });
     </script>
 </body>
 </html>
-add some herf ;ink with an don every section or button or option to activ er response and get the side  manual togfl ebutton or make it perfect for phone pages ad all attch link to open otiotn in every side baar options
